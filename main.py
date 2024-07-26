@@ -46,7 +46,7 @@ def get_product_info(product_id, frame, columns: list, ptype='parent', parent_co
     return result
 
 
-if __name__ == '__main__':
+def main():
     output_columns = [
         'Группы', 'Тип', 'Код', 'Наименование', 'Артикул', 'Цена: Цена продажи',
         'Валюта (Цена продажи)', 'Закупочная цена', 'Валюта (Закупочная цена)', 'Штрихкод EAN13', 'Описание',
@@ -76,3 +76,7 @@ if __name__ == '__main__':
     outputfile = filename[:filename.rfind('.')] + '_export' + filename[filename.rfind('.'):]
     new_path = 'output_data' + outputfile[outputfile.find('/'):]
     result_data.to_excel(new_path, index=False)
+
+
+if __name__ == '__main__':
+    main()
