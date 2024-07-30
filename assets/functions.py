@@ -1,5 +1,6 @@
 import re
 import json
+import pandas as pd
 
 
 def get_brand(product_name: str) -> str:
@@ -36,6 +37,11 @@ def find_costume(product_name: str) -> str:
 
 
 def parse_seasons(season_code: str) -> tuple | str:
+    """
+    Функция парсинга (определения )
+    :param season_code:
+    :return:
+    """
     if isinstance(season_code, int | float):
         raise TypeError('Сезонный код должен быть строкой')
 
@@ -50,6 +56,11 @@ def parse_seasons(season_code: str) -> tuple | str:
 
 
 def get_category(product_name: str) -> str:
+    """
+    Функция парсинга категории из названия товара
+    :param product_name: название товара
+    :return: название категории
+    """
     with open('assets/categories.json', 'r', encoding='u8') as file:
         categories = json.load(file)
     product_name = find_costume(product_name)
@@ -60,3 +71,19 @@ def get_category(product_name: str) -> str:
                         any(i in product_name for i in ['туфли летние', 'полуботинки', 'полусапоги'])):
                     continue
                 return cat
+
+
+def parse_clothe_size(product_category: str, product_size: str) -> tuple[str]:
+    """
+    Функция для нахождения размеров одежды для разных полов
+    :param product_category: Полное название категории
+    :param product_size: Размер одежды
+    :return: (грудь|талия, бедра)
+    """
+    sex, cat = product_category.split('/')
+    sizes_df = pd.read_excel('assets/sizes_data.xlsx',
+                             sheet_name=sex, dtype=str)
+    sizes_df.set_index('Категория', inplace=True)
+
+    return tuple(sizes_df.loc[cat, int(product_size)].split('|'))
+
