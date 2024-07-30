@@ -81,9 +81,12 @@ def parse_clothe_size(product_category: str, product_size: str) -> tuple[str]:
     :return: (грудь|талия, бедра)
     """
     sex, cat = product_category.split('/')
-    sizes_df = pd.read_excel('assets/sizes_data.xlsx',
-                             sheet_name=sex, dtype=str)
-    sizes_df.set_index('Категория', inplace=True)
+    regex = re.compile(r'\d+')
+    product_size = regex.findall(product_size)
 
-    return tuple(sizes_df.loc[cat, int(product_size)].split('|'))
+    if product_size:
+        sizes_df = pd.read_excel('assets/sizes_data.xlsx',
+                                 sheet_name=sex, dtype=str)
+        sizes_df.set_index('Категория', inplace=True)
+        return tuple(sizes_df.loc[cat, int(product_size[0])].split('|'))
 
